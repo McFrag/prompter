@@ -1,0 +1,68 @@
+<html>
+<head>
+<style>
+hmtl, body{
+width: 100%;
+height: 100%;
+margin: 0;
+}
+marquee {
+background-color: silver;
+padding-left: 5ch;
+position: absolute;
+top: 5ch;
+bottom:0;
+left:0;
+right: 0;
+}
+</style>
+</head>
+<body onload="init(event)">
+<div>
+<input type="file" onchange="load_file(event)">
+Speed <input type="range" id="speed" min="1" max="60" value="10" onchange="update_speed()">
+<button onclick="restart_scroll()">Restart</button>
+</div>
+<marquee id="text_container" behavior="scroll" direction="up" height="90%" scrollamount="60"></marquee>
+<script>
+function load_file(event){
+    var reader = new FileReader();
+    reader.addEventListener("load", () => document.getElementById('text_container').innerText = reader.result);
+    reader.readAsText(event.target.files[0]);
+    event.target.blur();
+}
+
+function update_speed(){
+    var ctl = document.getElementById('text_container');
+    console.log(ctl.scrollAmount);
+    ctl.scrollAmount =
+        document.getElementById('speed').value;
+    restart_scroll();
+    console.log(ctl.scrollAmount);
+}
+
+function restart_scroll(){
+    var ctl = document.getElementById('text_container');
+    ctl.stop();
+    ctl.start();
+}
+
+function init(event){
+    update_speed();
+}
+
+function toggle(){
+    if (undefined === toggle.runnning)
+        toggle.runnning = true;
+    if (toggle.runnning)
+        document.getElementById('text_container').stop();
+    else
+        document.getElementById('text_container').start();
+    toggle.runnning = !toggle.runnning;
+}
+
+document.addEventListener('keydown', e => {if ('Space' == e.code )toggle()});
+
+</script>
+</body>
+</html>

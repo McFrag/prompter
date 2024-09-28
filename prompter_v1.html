@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="">
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+    <style>
+      #prompter{
+        background-color: silver;
+        position: absolute;
+        height: 80%;
+        width: 80%;
+        padding-left: 1ch;
+        padding-right: 1ch;
+        pre{
+          padding-left: 1ch;
+          padding-right: 1ch;
+          white-space: pre-line;
+          position: absolute;
+          inset: 0;
+          overflow-y: scroll;
+          background-color: whitesmoke;
+          scroll-behavior: smooth;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="toolbar">
+      <button onclick="document.getElementById('file').click()" type="button">load</button>
+      <input id="file" type="file" onchange="load_file(event)" style="display:none">
+      <input id="step" size="3" value="3">
+      <input id="run" type="checkbox">
+      <button onclick="restart()" type="button">*</button>
+    </div>
+    <div id="prompter">
+      <pre>
+
+      </pre>
+    </div>
+    <script>
+      function context(){
+        return document.getElementById('prompter').firstElementChild;
+      }
+      function load_text(){
+        document.getElementById('prompter').firstElementChild.textContent = get_text();
+      }
+      function restart(){
+        document.getElementById('run').checked = false;
+        context().scrollTop = 0;
+      }
+      function start(){
+        //document.getElementById('prompter').classList.add('tick');
+      }
+
+      function line_height(){
+        var fs = parseFloat(document.defaultView.getComputedStyle(context()).fontSize);
+        return 1.2 * fs;
+      }
+
+      function tick(){
+        if (document.getElementById('run').checked){
+          //var dy = parseInt(document.defaultView.getComputedStyle(context()).fontSize);
+          var lines = parseFloat(document.getElementById('step').value);
+          context().scrollTop += lines * line_height() / 10;
+          //console.log(dy);
+        }
+      }
+
+      function pad_text(text){
+        var c = Math.floor(context().clientHeight / line_height());        
+        return "\n".repeat(c * 0.8) + text;
+      }
+
+      function load_file(event){
+        var reader = new FileReader();
+        reader.addEventListener("load", () => {
+          context().textContent = pad_text(reader.result);
+          restart();
+        });
+        reader.readAsText(event.target.files[0]);
+        event.target.blur();
+        document.getElementById('run').focus();
+        document.getElementById('run').checked = false;
+      }
+
+
+     function get_text(){
+      return `
+line 1
+`
+     } 
+     //load_text();
+     setInterval(tick, 100);
+     document.addEventListener('keydown', e => {
+        //console.log(e.key);
+        switch(e.key){
+          case ' ':
+            if (e.target != document.getElementById('run'))
+            document.getElementById('run').click();
+            break;
+          case '+':
+            document.getElementById('step').value = 
+            parseFloat(document.getElementById('step').value) + 1;
+            break;
+          case '-':
+            document.getElementById('step').value = 
+            parseFloat(document.getElementById('step').value) - 1;
+            break;
+        }        
+      });
+    </script>
+  </body>
+</html>

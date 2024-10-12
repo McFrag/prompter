@@ -100,11 +100,11 @@ line 1
             break;
           case '+':
             document.getElementById('step').value = 
-            parseFloat(document.getElementById('step').value) + 1;
+            parseFloat(document.getElementById('step').value) + e.shiftKey?1:0.5;
             break;
           case '-':
             document.getElementById('step').value = 
-            parseFloat(document.getElementById('step').value) - 1;
+            parseFloat(document.getElementById('step').value) - e.shiftKey?1:0.5;
             break;
         }        
       });
